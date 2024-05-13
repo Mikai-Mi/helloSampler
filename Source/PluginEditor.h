@@ -14,7 +14,9 @@
 //==============================================================================
 /**
 */
-class HelloSamplerAudioProcessorEditor  : public juce::AudioProcessorEditor
+class HelloSamplerAudioProcessorEditor  : public juce::AudioProcessorEditor,
+                                          public juce::FileDragAndDropTarget,
+                                          public juce::Slider::Listener
 {
 public:
     HelloSamplerAudioProcessorEditor (HelloSamplerAudioProcessor&);
@@ -24,8 +26,18 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
 
+    bool isInterestedInFileDrag(const juce::StringArray& files) override;
+    void filesDropped(const juce::StringArray& files, int x, int y) override;
+
+    void sliderValueChanged(juce::Slider* slider) override;
+
 private:
     juce::TextButton mLoadButton{ "Load" };
+    std::vector<float> mAudioPoints;
+    bool mShouldBePainting{ false };
+
+    juce::Slider mAttackSlider, mDecaySlider, mSustainSlider, mReleaseSlider;
+    juce::Label mAttackLabel, mDecayLabel, mSustainLabel, mReleaseLabel;
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     HelloSamplerAudioProcessor& audioProcessor;
